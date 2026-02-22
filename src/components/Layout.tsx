@@ -1,18 +1,28 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Server, Bell, Package, Settings, Activity, Menu, X } from 'lucide-react';
+import { getAllAlerts } from '../lib/api';
 
 const navItems = [
-  { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/hosts', icon: Server, label: 'Hosts' },
-  { to: '/alerts', icon: Bell, label: 'Alerts' },
-  { to: '/inventory', icon: Package, label: 'Inventory' },
-  { to: '/settings', icon: Settings, label: 'Settings' },
+  { to: '/', icon: LayoutDashboard, label: 'Dashboard', badge: false },
+  { to: '/hosts', icon: Server, label: 'Hosts', badge: false },
+  { to: '/alerts', icon: Bell, label: 'Alerts', badge: true },
+  { to: '/inventory', icon: Package, label: 'Inventory', badge: false },
+  { to: '/settings', icon: Settings, label: 'Settings', badge: false },
 ];
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeAlertCount, setActiveAlertCount] = useState(0);
   const location = useLocation();
+
+  // Poll active alert count
+  useEffect(() => {
+    const load = () => getAllAlerts().then(alerts => setActiveAlertCount(alerts.filter(a => a.status === 'active').length));
+    load();
+    const timer = setInterval(load, 30_000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Close sidebar on route change (mobile)
   useEffect(() => { setSidebarOpen(false); }, [location]);
@@ -43,7 +53,7 @@ export default function Layout() {
           </button>
         </div>
         <nav className="flex-1 px-3 py-4 space-y-1">
-          {navItems.map(({ to, icon: Icon, label }) => (
+          {navItems.map(({ to, icon: Icon, label, badge }) => (
             <NavLink
               key={to}
               to={to}
@@ -58,6 +68,11 @@ export default function Layout() {
             >
               <Icon className="w-5 h-5" />
               {label}
+              {badge && activeAlertCount > 0 && (
+                <span className="ml-auto px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-red-500 text-white leading-none">
+                  {activeAlertCount > 99 ? '99+' : activeAlertCount}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>

@@ -1,13 +1,35 @@
-import { statusBg, cn } from '../lib/utils';
+import { cn } from '../lib/utils';
 
-export default function StatusDot({ status, size = 'sm' }: { status: string; size?: 'sm' | 'md' | 'lg' }) {
-  const s = size === 'lg' ? 'w-3 h-3' : size === 'md' ? 'w-2.5 h-2.5' : 'w-2 h-2';
+interface Props {
+  status: string;
+  size?: 'sm' | 'md';
+  showLabel?: boolean;
+}
+
+export default function StatusDot({ status, size = 'sm', showLabel }: Props) {
+  // Different shapes for accessibility (colorblind support)
+  // Online: circle, Critical: triangle, Degraded: diamond, Offline: hollow circle
+  const shapes: Record<string, string> = {
+    online: '●',
+    critical: '▲',
+    degraded: '◆',
+    offline: '○',
+  };
+
+  const colors: Record<string, string> = {
+    online: 'text-green-400',
+    critical: 'text-red-400',
+    degraded: 'text-yellow-400',
+    offline: 'text-slate-500',
+  };
+
   return (
-    <span className="relative flex items-center justify-center">
-      <span className={cn(s, 'rounded-full', statusBg(status))} />
-      {(status === 'online' || status === 'critical') && (
-        <span className={cn('absolute rounded-full animate-ping opacity-50', s, statusBg(status))} />
-      )}
+    <span className={cn('inline-flex items-center gap-1', colors[status] ?? 'text-slate-500')}
+      role="status" aria-label={`Status: ${status}`} title={status}>
+      <span className={cn(size === 'md' ? 'text-sm' : 'text-xs', 'leading-none')}>
+        {shapes[status] ?? '●'}
+      </span>
+      {showLabel && <span className="text-xs capitalize">{status}</span>}
     </span>
   );
 }

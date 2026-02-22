@@ -110,25 +110,39 @@ export default function Dashboard() {
         <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
           <h2 className="font-semibold mb-4">Host Status Map</h2>
           <div className="flex flex-wrap gap-2">
-            {hosts.map(h => (
-              <Link key={h.hostname} to={`/hosts/${h.hostname}`} title={`${h.hostname} — ${h.status}`}>
-                <div className={cn(
-                  'w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-all hover:scale-110',
-                  h.status === 'online' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
-                  h.status === 'critical' ? 'bg-red-500/20 text-red-400 border border-red-500/30 animate-pulse' :
-                  h.status === 'degraded' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
-                  'bg-slate-700 text-slate-500 border border-slate-600'
-                )}>
-                  {h.hostname.charAt(0).toUpperCase()}
-                </div>
-              </Link>
-            ))}
+            {hosts.map(h => {
+              // Generate short label: "web-server-01" → "ws1", "gpu-server-03" → "gs3"
+              const parts = h.hostname.split('-');
+              const label = parts.length >= 2
+                ? parts.map(p => /^\d+$/.test(p) ? p : p[0]).join('').slice(0, 4)
+                : h.hostname.slice(0, 3);
+              const statusIcon = h.status === 'online' ? '●' : h.status === 'critical' ? '▲' : h.status === 'degraded' ? '◆' : '○';
+              return (
+                <Link key={h.hostname} to={`/hosts/${h.hostname}`} title={`${h.hostname} — ${h.status}`}
+                  className="group relative">
+                  <div className={cn(
+                    'w-10 h-10 rounded-lg flex flex-col items-center justify-center text-[10px] font-semibold transition-all hover:scale-110',
+                    h.status === 'online' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
+                    h.status === 'critical' ? 'bg-red-500/20 text-red-400 border border-red-500/30 animate-pulse' :
+                    h.status === 'degraded' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
+                    'bg-slate-700 text-slate-500 border border-slate-600'
+                  )}>
+                    <span className="text-[8px] leading-none">{statusIcon}</span>
+                    <span>{label}</span>
+                  </div>
+                  {/* Tooltip */}
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-slate-900 border border-slate-700 rounded text-[10px] text-slate-300 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                    {h.hostname}
+                  </div>
+                </Link>
+              );
+            })}
           </div>
-          <div className="flex gap-4 mt-4 text-xs text-slate-500">
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-400" /> Online</span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-400" /> Critical</span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-yellow-400" /> Degraded</span>
-            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-slate-500" /> Offline</span>
+          <div className="flex flex-wrap gap-3 mt-4 text-xs text-slate-500">
+            <span className="flex items-center gap-1.5"><span className="text-green-400">●</span> Online</span>
+            <span className="flex items-center gap-1.5"><span className="text-red-400">▲</span> Critical</span>
+            <span className="flex items-center gap-1.5"><span className="text-yellow-400">◆</span> Degraded</span>
+            <span className="flex items-center gap-1.5"><span className="text-slate-500">○</span> Offline</span>
           </div>
         </div>
 

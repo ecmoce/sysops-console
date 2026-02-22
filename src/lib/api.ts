@@ -47,3 +47,11 @@ export async function getAllAlerts(): Promise<AlertRow[]> {
 export function getHostMetricSnapshot(hostname: string) {
   return hostMetricSnapshots[hostname] ?? { cpu: 0, memory: 0, disk: 0 };
 }
+
+export async function acknowledgeAlert(id: string): Promise<void> {
+  try {
+    await fetch(`${API_BASE}/alerts/${id}/ack`, { method: 'POST' });
+  } catch {
+    // Mock mode — silently succeed
+  }
+}

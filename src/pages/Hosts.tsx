@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, LayoutGrid, List, ChevronRight } from 'lucide-react';
 import { getHosts, getHostMetricSnapshot } from '../lib/api';
@@ -12,8 +12,21 @@ export default function Hosts() {
   const [search, setSearch] = useState('');
   const [view, setView] = useState<'grid' | 'table'>('grid');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { getHosts().then(setHosts); }, []);
+
+  // "/" keyboard shortcut
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
 
   const filtered = hosts.filter(h => {
     if (statusFilter !== 'all' && h.status !== statusFilter) return false;
@@ -30,8 +43,9 @@ export default function Hosts() {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
           <input
+            ref={searchRef}
             type="text"
-            placeholder="Search hosts..."
+            placeholder='Search hosts... (press "/" to focus)'
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-colors"

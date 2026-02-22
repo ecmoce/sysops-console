@@ -41,8 +41,7 @@ export async function getFleetOverview(): Promise<FleetOverview> {
 }
 
 export async function getAllAlerts(): Promise<AlertRow[]> {
-  // No global alerts endpoint, aggregate from mock
-  return mockAlerts;
+  return fetchApi('/alerts?per_page=200', mockAlerts);
 }
 
 export function getHostMetricSnapshot(hostname: string) {

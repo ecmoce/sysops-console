@@ -28,9 +28,14 @@ export default function Dashboard() {
   const [alerts, setAlerts] = useState<AlertRow[]>([]);
 
   useEffect(() => {
-    getFleetOverview().then(setOverview);
-    getHosts().then(setHosts);
-    getAllAlerts().then(setAlerts);
+    const load = () => {
+      getFleetOverview().then(setOverview);
+      getHosts().then(setHosts);
+      getAllAlerts().then(setAlerts);
+    };
+    load();
+    const timer = setInterval(load, 30_000);
+    return () => clearInterval(timer);
   }, []);
 
   const activeAlerts = alerts.filter(a => a.status === 'active').sort((a, b) => {
@@ -52,7 +57,15 @@ export default function Dashboard() {
     return { hour: `${hourAgo}h`, critical: critCount + Math.floor(Math.random() * 2), warning: warnCount + Math.floor(Math.random() * 3) };
   });
 
-  if (!overview) return <div className="p-8 text-slate-400">Loading...</div>;
+  if (!overview) return (
+    <div className="p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
+      <div className="h-8 w-40 bg-slate-700/50 rounded animate-pulse" />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[1,2,3,4].map(i => <div key={i} className="bg-slate-800 border border-slate-700 rounded-xl p-5 h-24 animate-pulse" />)}
+      </div>
+      <div className="bg-slate-800 border border-slate-700 rounded-xl h-64 animate-pulse" />
+    </div>
+  );
 
   return (
     <div className="p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">

@@ -1,73 +1,93 @@
-# React + TypeScript + Vite
+# 📊 SysOps Console
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> **웹 대시보드** — SysOps 모니터링 시스템의 실시간 웹 UI
 
-Currently, two official plugins are available:
+[![React](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 관련 프로젝트
 
-## React Compiler
+| 프로젝트 | 설명 |
+|----------|------|
+| [sysops-agent](https://github.com/ecmoce/sysops-agent) | 서버에 설치되는 모니터링 에이전트 |
+| [sysops-server](https://github.com/ecmoce/sysops-server) | 중앙 데이터 수집/API 서버 |
+| **sysops-console** | 웹 대시보드 UI (현재 레포) |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+- **React 19** + **TypeScript 5.9**
+- **Vite 7** for build
+- **Tailwind CSS 4** for styling
+- **Recharts** for data visualization
+- **React Router 7** for navigation
+- **Lucide React** for icons
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Features
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- 📊 Fleet overview dashboard with auto-refresh (30s)
+- 🖥️ Host list with grid/table view, search, status filter
+- 📈 Per-host CPU/Memory/Disk charts with time range selection
+- 🔔 Alert management with severity & status filters
+- 📦 Hardware inventory table
+- ⚙️ Settings page
+- 📱 Responsive layout with mobile hamburger menu
+- 🎨 Dark theme with smooth animations
+- ⌨️ Keyboard shortcuts (ESC to close)
+- 🔄 Skeleton loading states
+- 🌐 WebSocket real-time alert stream
+- 🎯 Mock data fallback when API is unavailable
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Quick Start
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Install dependencies
+npm install
+
+# Development (with API proxy to localhost:8080)
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Docker
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+docker build -t sysops-console .
+docker run -p 80:80 sysops-console
 ```
+
+The nginx config proxies `/api/` and `/ws/` to `sysops-server:8080`.
+
+## Project Structure
+
+```
+src/
+├── components/       # Reusable UI components
+│   ├── Layout.tsx    # App shell with responsive sidebar
+│   ├── MetricBar.tsx # Progress bar for metrics
+│   ├── StatusDot.tsx # Status indicator with pulse
+│   ├── Shimmer.tsx   # Skeleton loading components
+│   └── ErrorState.tsx# Error display with retry
+├── pages/            # Route pages
+│   ├── Dashboard.tsx # Fleet overview
+│   ├── Hosts.tsx     # Host list (grid/table)
+│   ├── HostDetail.tsx# Per-host metrics & alerts
+│   ├── Alerts.tsx    # Global alert management
+│   ├── Inventory.tsx # Hardware inventory
+│   └── SettingsPage.tsx
+├── lib/
+│   ├── api.ts        # API client with mock fallback
+│   ├── types.ts      # TypeScript interfaces
+│   └── utils.ts      # Helper functions
+└── mocks/
+    └── data.ts       # Realistic mock data
+```
+
+## License
+
+MIT — [LICENSE](LICENSE)

@@ -1,18 +1,18 @@
 # 📊 SysOps Console
 
-> **웹 대시보드** — SysOps 모니터링 시스템의 실시간 웹 UI
+> **Web Dashboard** — Real-time web UI for SysOps monitoring system
 
 [![React](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## 관련 프로젝트
+## Related Projects
 
-| 프로젝트 | 설명 |
-|----------|------|
-| [sysops-agent](https://github.com/ecmoce/sysops-agent) | 서버에 설치되는 모니터링 에이전트 |
-| [sysops-server](https://github.com/ecmoce/sysops-server) | 중앙 데이터 수집/API 서버 |
-| **sysops-console** | 웹 대시보드 UI (현재 레포) |
+| Project | Description |
+|---------|-------------|
+| [sysops-agent](https://github.com/ecmoce/sysops-agent) | Monitoring agent installed on servers |
+| [sysops-server](https://github.com/ecmoce/sysops-server) | Central data collection/API server |
+| **sysops-console** | Web dashboard UI (current repo) |
 
 ## Tech Stack
 

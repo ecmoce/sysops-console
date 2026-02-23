@@ -1,27 +1,27 @@
 # 📊 SysOps Console — Web Dashboard
 
-> SysOps Server의 REST/WebSocket API를 활용한 실시간 인프라 모니터링 대시보드
+> Real-time infrastructure monitoring dashboard utilizing SysOps Server's REST/WebSocket API
 
 ---
 
-## 목차
+## Table of Contents
 
-- [개요](#-개요)
-- [스크린 구성](#-스크린-구성)
-- [실행 방법](#-실행-방법)
-- [프로젝트 구조](#-프로젝트-구조)
-- [기술 스택](#-기술-스택)
-- [지원 기능](#-지원-기능)
-- [API 연동](#-api-연동)
-- [Mock 데이터](#-mock-데이터)
-- [배포](#-배포)
-- [설정](#-설정)
+- [Overview](#-overview)
+- [Screen Layout](#-screen-layout)
+- [Running the Application](#-running-the-application)
+- [Project Structure](#-project-structure)
+- [Tech Stack](#-tech-stack)
+- [Supported Features](#-supported-features)
+- [API Integration](#-api-integration)
+- [Mock Data](#-mock-data)
+- [Deployment](#-deployment)
+- [Configuration](#-configuration)
 
 ---
 
-## 🔍 개요
+## 🔍 Overview
 
-SysOps Console은 수천 대의 서버에서 실행되는 SysOps Agent의 메트릭, 알림, 인벤토리를 한눈에 파악할 수 있는 웹 대시보드입니다. Dark theme 기반의 프로페셔널한 UI로, Datadog/Grafana 수준의 가독성과 정보 밀도를 제공합니다.
+SysOps Console is a web dashboard that provides an at-a-glance view of metrics, alerts, and inventory from SysOps Agents running on thousands of servers. Built with a professional UI based on dark theme, it delivers readability and information density at the level of Datadog/Grafana.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -40,24 +40,24 @@ SysOps Console은 수천 대의 서버에서 실행되는 SysOps Agent의 메트
 └─────────────────────────────────────────────────────────┘
 ```
 
-### 핵심 특징
+### Key Features
 
-| 특징 | 설명 |
-|------|------|
-| 🌙 **Dark Theme** | Slate-900 기반, 눈의 피로 최소화 |
-| 📈 **실시간 차트** | Recharts 기반 시계열 차트 (CPU, Memory, Disk, GPU) |
-| 🔴 **실시간 알림** | WebSocket으로 알림 즉시 수신 |
-| 📱 **반응형** | 모바일/태블릿/데스크톱 대응 |
-| 🎯 **Mock Fallback** | API 미연결 시 자동 Mock 데이터 전환 |
-| ⚡ **SPA** | React Router, 페이지 전환 무새로고침 |
+| Feature | Description |
+|---------|-------------|
+| 🌙 **Dark Theme** | Slate-900 based, minimizes eye strain |
+| 📈 **Real-time Charts** | Recharts-based time series charts (CPU, Memory, Disk, GPU) |
+| 🔴 **Real-time Alerts** | Immediate alert reception via WebSocket |
+| 📱 **Responsive** | Mobile/Tablet/Desktop support |
+| 🎯 **Mock Fallback** | Automatic mock data switch when API is unavailable |
+| ⚡ **SPA** | React Router, no-refresh page transitions |
 
 ---
 
-## 🖥 스크린 구성
+## 🖥 Screen Layout
 
 ### 1. Dashboard (`/`)
 
-Fleet 전체 상태를 한 화면에 요약합니다.
+Summarizes the entire fleet status on a single screen.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -88,18 +88,18 @@ Fleet 전체 상태를 한 화면에 요약합니다.
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**포함 요소:**
-- 상태별 호스트 수 카드 (Online / Offline / Degraded / Active Alerts)
-- 활성 알림 리스트 (severity 순 정렬, 시간 표시)
-- 호스트 상태 맵 (색상 코딩된 도트 그리드)
-- 알림 타임라인 차트 (24시간, Critical/Warning 영역 차트)
-- 호스트 테이블 (CPU/Memory/Disk 프로그레스 바)
+**Included Components:**
+- Host count cards by status (Online / Offline / Degraded / Active Alerts)
+- Active alerts list (sorted by severity, with timestamps)
+- Host status map (color-coded dot grid)
+- Alert timeline chart (24 hours, Critical/Warning area chart)
+- Host table (with CPU/Memory/Disk progress bars)
 
 ---
 
 ### 2. Hosts (`/hosts`)
 
-모든 호스트를 카드 뷰로 표시합니다.
+Displays all hosts in card view.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -119,18 +119,18 @@ Fleet 전체 상태를 한 화면에 요약합니다.
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**기능:**
-- 텍스트 검색 (hostname, IP, OS)
-- 상태 필터 (All / Online / Critical / Degraded / Offline)
-- 카드 클릭 → Host Detail 페이지 이동
-- 호스트별 CPU/Memory/Disk 프로그레스 바
-- OS, IP, 마지막 heartbeat 표시
+**Features:**
+- Text search (hostname, IP, OS)
+- Status filter (All / Online / Critical / Degraded / Offline)
+- Card click → Navigate to Host Detail page
+- CPU/Memory/Disk progress bars per host
+- Display OS, IP, last heartbeat
 
 ---
 
-### 3. Host Detail (`/hosts/:hostname`) ⭐ 핵심 페이지
+### 3. Host Detail (`/hosts/:hostname`) ⭐ Core Page
 
-특정 호스트의 모든 정보를 하나의 페이지에 표현합니다.
+Presents all information for a specific host on a single page.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -181,28 +181,28 @@ Fleet 전체 상태를 한 화면에 요약합니다.
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**탭 구성:**
+**Tab Layout:**
 
-| 탭 | 내용 |
-|----|------|
-| **Overview** | CPU/Memory/Disk 요약 + 차트 + 알림 |
-| **CPU** | CPU 사용률 차트, 소켓별 사용률, 코어 수, Load Average |
-| **Memory** | 메모리 사용률 차트, Used/Buffers/Cached/Swap 분리 |
-| **Disk** | 디바이스별 사용률 바, I/O 차트 |
-| **Network** | rx/tx 차트, 인터페이스 목록 |
-| **Alerts** | 해당 호스트의 알림 히스토리 |
+| Tab | Content |
+|-----|---------|
+| **Overview** | CPU/Memory/Disk summary + charts + alerts |
+| **CPU** | CPU usage chart, per-socket usage, core count, Load Average |
+| **Memory** | Memory usage chart, Used/Buffers/Cached/Swap breakdown |
+| **Disk** | Per-device usage bars, I/O charts |
+| **Network** | rx/tx charts, interface list |
+| **Alerts** | Alert history for this host |
 
-**차트 기능:**
-- 시간 범위 선택: 1h / 6h / 24h / 7d
-- Hover tooltip: 정확한 값 + 시각 표시
-- SVG Progress Ring: 소켓별 CPU, 메모리 사용률 시각화
-- 반응형: 모바일에서도 깔끔하게 표시
+**Chart Features:**
+- Time range selection: 1h / 6h / 24h / 7d
+- Hover tooltip: Precise values + visual indicators
+- SVG Progress Ring: Per-socket CPU, memory usage visualization
+- Responsive: Clean display on mobile devices
 
 ---
 
 ### 4. Alerts (`/alerts`)
 
-전체 시스템의 알림을 관리합니다.
+Manages alerts for the entire system.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -224,19 +224,19 @@ Fleet 전체 상태를 한 화면에 요약합니다.
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**기능:**
-- Severity 필터 (All / Critical / Warning / Info)
-- Status 필터 (Active / Resolved)
-- 텍스트 검색 (hostname, metric, message)
-- 시간순 정렬 (최신 먼저)
-- WebSocket 실시간 업데이트 (`/ws/v1/alerts/stream`)
-- 호스트 클릭 → Host Detail 이동
+**Features:**
+- Severity filter (All / Critical / Warning / Info)
+- Status filter (Active / Resolved)
+- Text search (hostname, metric, message)
+- Sort by time (latest first)
+- WebSocket real-time updates (`/ws/v1/alerts/stream`)
+- Host click → Navigate to Host Detail
 
 ---
 
 ### 5. Inventory (`/inventory`)
 
-전체 호스트의 하드웨어/소프트웨어 인벤토리를 표시합니다.
+Displays hardware/software inventory for all hosts.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -251,208 +251,208 @@ Fleet 전체 상태를 한 화면에 요약합니다.
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**표시 항목:**
+**Displayed Items:**
 - OS (distro, version)
 - CPU (model, sockets, cores)
 - Memory (total, type)
-- GPU (model, count) — 있을 경우
-- 마지막 수집 시각
+- GPU (model, count) — if present
+- Last collection timestamp
 
 ---
 
 ### 6. Settings (`/settings`)
 
-콘솔 설정을 관리합니다.
+Manages console settings.
 
-**설정 항목:**
+**Configuration Items:**
 
-| 항목 | 설명 | 기본값 |
-|------|------|--------|
-| API Endpoint | Server API 주소 | `/api/v1` (프록시) |
-| Refresh Interval | 자동 새로고침 주기 | 30초 |
-| Theme | Dark / Light 모드 | Dark |
+| Item | Description | Default |
+|------|-------------|---------|
+| API Endpoint | Server API address | `/api/v1` (proxy) |
+| Refresh Interval | Auto-refresh interval | 30 seconds |
+| Theme | Dark / Light mode | Dark |
 
 ---
 
-## 🚀 실행 방법
+## 🚀 Running the Application
 
-### 사전 요구사항
+### Prerequisites
 
 - Node.js 20+
 - npm 9+
 
-### 방법 1: 로컬 개발 (Mock 데이터)
+### Method 1: Local Development (Mock Data)
 
-API 서버 없이 Mock 데이터로 즉시 실행:
+Run immediately with mock data without API server:
 
 ```bash
 cd /tmp/sysops-console
 
-# 의존성 설치
+# Install dependencies
 npm install
 
-# 개발 서버 시작 (http://localhost:5173)
+# Start development server (http://localhost:5173)
 npm run dev
 ```
 
-> API 서버 미연결 시 자동으로 Mock 데이터로 fallback합니다.
+> Automatically falls back to mock data when API server is not connected.
 
-### 방법 2: Server 연동 개발
+### Method 2: Server Integration Development
 
 ```bash
-# 1. SysOps Server 실행 (별도 터미널)
+# 1. Run SysOps Server (separate terminal)
 cd /tmp/sysops-server
 cargo run -- --config config.toml
 
-# 2. Console 개발 서버 시작
+# 2. Start Console development server
 cd /tmp/sysops-console
 npm run dev
-# → Vite proxy가 /api → http://localhost:8080 으로 자동 프록시
+# → Vite proxy automatically proxies /api → http://localhost:8080
 ```
 
-### 방법 3: Docker 통합 실행
+### Method 3: Docker Integrated Run
 
 ```bash
-# 전체 스택 실행 (NATS + TimescaleDB + Server + Agent + Console)
+# Run entire stack (NATS + TimescaleDB + Server + Agent + Console)
 cd /tmp/sysops-integration
 docker-compose up -d
 
-# Console 접속
+# Access Console
 open http://localhost:3000
 ```
 
-### 방법 4: Production 빌드
+### Method 4: Production Build
 
 ```bash
-# 정적 파일 빌드
+# Build static files
 npm run build
-# → dist/ 디렉토리에 생성
+# → Generated in dist/ directory
 
-# 미리보기
+# Preview
 npm run preview
 ```
 
 ---
 
-## 📁 프로젝트 구조
+## 📁 Project Structure
 
 ```
 sysops-console/
-├── public/                    # 정적 에셋
+├── public/                    # Static assets
 ├── src/
-│   ├── main.tsx              # React 진입점
-│   ├── App.tsx               # 라우팅 정의
-│   ├── index.css             # TailwindCSS 글로벌 스타일
+│   ├── main.tsx              # React entry point
+│   ├── App.tsx               # Route definitions
+│   ├── index.css             # TailwindCSS global styles
 │   │
-│   ├── pages/                # 페이지 컴포넌트 (6개)
-│   │   ├── Dashboard.tsx     # Fleet Overview 대시보드
-│   │   ├── Hosts.tsx         # 호스트 목록 (카드 뷰)
-│   │   ├── HostDetail.tsx    # 호스트 상세 (차트, 인벤토리, 알림)
-│   │   ├── Alerts.tsx        # 전체 알림 목록
-│   │   ├── Inventory.tsx     # 하드웨어/소프트웨어 인벤토리
-│   │   └── SettingsPage.tsx  # 콘솔 설정
+│   ├── pages/                # Page components (6 pages)
+│   │   ├── Dashboard.tsx     # Fleet Overview dashboard
+│   │   ├── Hosts.tsx         # Host list (card view)
+│   │   ├── HostDetail.tsx    # Host detail (charts, inventory, alerts)
+│   │   ├── Alerts.tsx        # Global alert list
+│   │   ├── Inventory.tsx     # Hardware/software inventory
+│   │   └── SettingsPage.tsx  # Console settings
 │   │
-│   ├── components/           # 재사용 UI 컴포넌트
-│   │   ├── Layout.tsx        # 사이드바 + 메인 레이아웃
-│   │   ├── MetricBar.tsx     # CPU/Memory/Disk 프로그레스 바
-│   │   └── StatusDot.tsx     # 상태 인디케이터 (🟢🔴🟡)
+│   ├── components/           # Reusable UI components
+│   │   ├── Layout.tsx        # Sidebar + main layout
+│   │   ├── MetricBar.tsx     # CPU/Memory/Disk progress bar
+│   │   └── StatusDot.tsx     # Status indicator (🟢🔴🟡)
 │   │
-│   ├── lib/                  # 유틸리티
-│   │   ├── api.ts            # API 호출 함수 (fetch + mock fallback)
-│   │   ├── types.ts          # TypeScript 인터페이스 정의
-│   │   └── utils.ts          # 헬퍼 함수 (timeAgo, statusColor 등)
+│   ├── lib/                  # Utilities
+│   │   ├── api.ts            # API call functions (fetch + mock fallback)
+│   │   ├── types.ts          # TypeScript interface definitions
+│   │   └── utils.ts          # Helper functions (timeAgo, statusColor, etc.)
 │   │
-│   └── mocks/                # Mock 데이터
-│       └── data.ts           # 12개 호스트, 알림, 메트릭 생성기
+│   └── mocks/                # Mock data
+│       └── data.ts           # 12 hosts, alerts, metric generators
 │
 ├── Dockerfile                # Multi-stage: Node build → Nginx serve
-├── nginx.conf                # Nginx 설정 (SPA + API 프록시)
-├── vite.config.ts            # Vite 설정 (프록시, TailwindCSS)
-├── tsconfig.json             # TypeScript 설정
-├── package.json              # 의존성 및 스크립트
-└── CONSOLE.md                # 이 문서
+├── nginx.conf                # Nginx config (SPA + API proxy)
+├── vite.config.ts            # Vite config (proxy, TailwindCSS)
+├── tsconfig.json             # TypeScript config
+├── package.json              # Dependencies and scripts
+└── CONSOLE.md                # This document
 ```
 
 ---
 
-## 🛠 기술 스택
+## 🛠 Tech Stack
 
-| 카테고리 | 기술 | 버전 | 용도 |
-|----------|------|------|------|
-| **Framework** | React | 19 | UI 컴포넌트 |
-| **Language** | TypeScript | 5.9 | Type-safe 코드 |
-| **빌드** | Vite | 7 | HMR, 번들링, 프록시 |
-| **스타일** | TailwindCSS | 4 | 유틸리티 기반 스타일링 |
-| **차트** | Recharts | 3 | 시계열 차트, 영역 차트 |
-| **라우팅** | React Router | 7 | SPA 클라이언트 라우팅 |
-| **아이콘** | Lucide React | 0.575 | SVG 아이콘 세트 |
-| **서빙** | Nginx | alpine | 정적 파일 + API 리버스 프록시 |
-
----
-
-## ✨ 지원 기능
-
-### 데이터 표시
-
-| 기능 | 설명 | 페이지 |
-|------|------|--------|
-| Fleet 요약 | 전체 호스트 상태 통계 (online/offline/degraded) | Dashboard |
-| 호스트 상태 맵 | 색상 코딩 도트 그리드 | Dashboard |
-| 알림 타임라인 | 24시간 Critical/Warning 영역 차트 | Dashboard |
-| 호스트 테이블 | CPU/MEM/Disk 프로그레스 바 포함 | Dashboard, Hosts |
-| 호스트 카드 | 개별 호스트 요약 카드 | Hosts |
-| 시스템 정보 | OS, CPU, Memory, GPU, Network 상세 스펙 | Host Detail |
-| CPU 차트 | 사용률 시계열, 소켓별 SVG Ring | Host Detail |
-| Memory 차트 | 사용률 시계열, Used/Cached/Swap 분리 | Host Detail |
-| Disk 차트 | 디바이스별 사용률 바, I/O 표시 | Host Detail |
-| Network 차트 | rx/tx 시계열 | Host Detail |
-| 알림 목록 | Severity 아이콘, 상대 시간, 필터 | Alerts, Host Detail |
-| 인벤토리 | 하드웨어/소프트웨어 테이블 | Inventory |
-
-### 인터랙션
-
-| 기능 | 설명 |
-|------|------|
-| 검색 | 호스트, 알림 텍스트 검색 |
-| 필터 | 상태별, Severity별 필터 |
-| 시간 범위 | 차트 1h / 6h / 24h / 7d 전환 |
-| 탭 네비게이션 | Host Detail 탭 (Overview/CPU/Memory/Disk/Network/Alerts) |
-| 호버 툴팁 | 차트 데이터 포인트 상세 |
-| 클릭 네비게이션 | 호스트 카드 → Detail, 알림 → Host Detail |
-| 설정 저장 | API endpoint, 새로고침 주기, 테마 |
-
-### 실시간
-
-| 기능 | 프로토콜 | 설명 |
-|------|----------|------|
-| 알림 스트림 | WebSocket | `/ws/v1/alerts/stream` 구독 |
-| 자동 새로고침 | HTTP Polling | 설정 가능한 주기 (기본 30초) |
+| Category | Technology | Version | Purpose |
+|----------|------------|---------|---------|
+| **Framework** | React | 19 | UI components |
+| **Language** | TypeScript | 5.9 | Type-safe code |
+| **Build** | Vite | 7 | HMR, bundling, proxy |
+| **Styling** | TailwindCSS | 4 | Utility-based styling |
+| **Charts** | Recharts | 3 | Time series charts, area charts |
+| **Routing** | React Router | 7 | SPA client routing |
+| **Icons** | Lucide React | 0.575 | SVG icon set |
+| **Serving** | Nginx | alpine | Static files + API reverse proxy |
 
 ---
 
-## 🔌 API 연동
+## ✨ Supported Features
 
-Console은 SysOps Server의 REST API를 사용합니다.
+### Data Display
 
-### 사용하는 API 엔드포인트
+| Feature | Description | Page |
+|---------|-------------|------|
+| Fleet Summary | Overall host status statistics (online/offline/degraded) | Dashboard |
+| Host Status Map | Color-coded dot grid | Dashboard |
+| Alert Timeline | 24-hour Critical/Warning area chart | Dashboard |
+| Host Table | Including CPU/MEM/Disk progress bars | Dashboard, Hosts |
+| Host Cards | Individual host summary cards | Hosts |
+| System Info | OS, CPU, Memory, GPU, Network detailed specs | Host Detail |
+| CPU Chart | Usage time series, per-socket SVG Ring | Host Detail |
+| Memory Chart | Usage time series, Used/Cached/Swap breakdown | Host Detail |
+| Disk Chart | Per-device usage bars, I/O display | Host Detail |
+| Network Chart | rx/tx time series | Host Detail |
+| Alert List | Severity icons, relative time, filters | Alerts, Host Detail |
+| Inventory | Hardware/software table | Inventory |
 
-| 엔드포인트 | 사용 페이지 | 설명 |
-|------------|------------|------|
-| `GET /api/v1/fleet/overview` | Dashboard | Fleet 전체 통계 |
-| `GET /api/v1/hosts` | Dashboard, Hosts | 호스트 목록 |
-| `GET /api/v1/hosts/{hostname}` | Host Detail | 호스트 상세 |
-| `GET /api/v1/hosts/{hostname}/metrics` | Host Detail | 시계열 메트릭 |
-| `GET /api/v1/hosts/{hostname}/alerts` | Host Detail, Alerts | 알림 목록 |
-| `GET /api/v1/hosts/{hostname}/inventory` | Host Detail, Inventory | 인벤토리 |
-| `WS /ws/v1/alerts/stream` | Alerts | 실시간 알림 |
+### Interaction
 
-### API 호출 패턴
+| Feature | Description |
+|---------|-------------|
+| Search | Host, alert text search |
+| Filters | By status, by severity |
+| Time Range | Chart 1h / 6h / 24h / 7d switching |
+| Tab Navigation | Host Detail tabs (Overview/CPU/Memory/Disk/Network/Alerts) |
+| Hover Tooltip | Chart data point details |
+| Click Navigation | Host card → Detail, alert → Host Detail |
+| Settings Saving | API endpoint, refresh interval, theme |
+
+### Real-time
+
+| Feature | Protocol | Description |
+|---------|----------|-------------|
+| Alert Stream | WebSocket | Subscribe to `/ws/v1/alerts/stream` |
+| Auto Refresh | HTTP Polling | Configurable interval (default 30s) |
+
+---
+
+## 🔌 API Integration
+
+Console uses SysOps Server's REST API.
+
+### Used API Endpoints
+
+| Endpoint | Used Page | Description |
+|----------|-----------|-------------|
+| `GET /api/v1/fleet/overview` | Dashboard | Fleet-wide statistics |
+| `GET /api/v1/hosts` | Dashboard, Hosts | Host list |
+| `GET /api/v1/hosts/{hostname}` | Host Detail | Host details |
+| `GET /api/v1/hosts/{hostname}/metrics` | Host Detail | Time series metrics |
+| `GET /api/v1/hosts/{hostname}/alerts` | Host Detail, Alerts | Alert list |
+| `GET /api/v1/hosts/{hostname}/inventory` | Host Detail, Inventory | Inventory |
+| `WS /ws/v1/alerts/stream` | Alerts | Real-time alerts |
+
+### API Call Pattern
 
 ```typescript
 // src/lib/api.ts
 
-// 모든 API 호출은 fetchApi 래퍼를 통해 실행
-// API 실패 시 Mock 데이터로 자동 fallback
+// All API calls executed through fetchApi wrapper
+// Automatic fallback to mock data on API failure
 async function fetchApi<T>(path: string, fallback: T): Promise<T> {
   try {
     const res = await fetch(`${API_BASE}${path}`);
@@ -460,14 +460,14 @@ async function fetchApi<T>(path: string, fallback: T): Promise<T> {
     const json = await res.json();
     return json.data ?? json;
   } catch {
-    return fallback;  // Mock 데이터 반환
+    return fallback;  // Return mock data
   }
 }
 ```
 
-### Vite 프록시 설정
+### Vite Proxy Configuration
 
-개발 환경에서 CORS 문제 없이 API 호출:
+API calls without CORS issues in development environment:
 
 ```typescript
 // vite.config.ts
@@ -483,22 +483,22 @@ export default defineConfig({
 
 ---
 
-## 🎭 Mock 데이터
+## 🎭 Mock Data
 
-API 서버 없이도 UI를 확인할 수 있도록 Mock 데이터를 내장합니다.
+Built-in mock data allows UI verification without API server.
 
-### Mock 구성 (`src/mocks/data.ts`)
+### Mock Configuration (`src/mocks/data.ts`)
 
-| 데이터 | 내용 |
-|--------|------|
-| `mockHosts` | 12개 호스트 (다양한 상태/OS/역할) |
-| `mockAlerts` | 8개 알림 (critical/warning/info) |
-| `mockFleetOverview` | Fleet 통계 |
-| `generateMetrics()` | 시계열 메트릭 생성기 (sin + random noise) |
-| `getInventory()` | 호스트별 인벤토리 |
-| `hostMetricSnapshots` | 호스트별 CPU/MEM/Disk 스냅샷 |
+| Data | Content |
+|------|---------|
+| `mockHosts` | 12 hosts (various status/OS/roles) |
+| `mockAlerts` | 8 alerts (critical/warning/info) |
+| `mockFleetOverview` | Fleet statistics |
+| `generateMetrics()` | Time series metric generator (sin + random noise) |
+| `getInventory()` | Per-host inventory |
+| `hostMetricSnapshots` | Per-host CPU/MEM/Disk snapshots |
 
-### Mock 호스트 예시
+### Mock Host Examples
 
 ```
 web-server-01    🟢 Online    Ubuntu 22.04   10.0.1.5
@@ -513,31 +513,31 @@ edge-01          ⚫ Offline   Rocky 8        10.0.6.1
 ...
 ```
 
-### 메트릭 생성기
+### Metric Generator
 
-`generateMetrics(hostname, metricName, hours)` — Realistic한 시계열 데이터:
+`generateMetrics(hostname, metricName, hours)` — Realistic time series data:
 
 ```
                  ╭─╮    noise + sin wave
   base ──────╮╭─╯ ╰──╮
              ╰╯       ╰────
   
-  base = 호스트/메트릭별 다른 기준값
+  base = Different baseline per host/metric
   noise = Math.random() * amplitude
   pattern = sin(t * frequency) * swing
 ```
 
 ---
 
-## 🐳 배포
+## 🐳 Deployment
 
-### Docker 빌드
+### Docker Build
 
 ```bash
-# 이미지 빌드
+# Build image
 docker build -t sysops-console .
 
-# 실행 (Nginx 서빙)
+# Run (Nginx serving)
 docker run -p 3000:80 sysops-console
 ```
 
@@ -559,7 +559,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 ```
 
-### Nginx 설정
+### Nginx Configuration
 
 ```nginx
 server {
@@ -567,12 +567,12 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
-    # API 프록시 → SysOps Server
+    # API proxy → SysOps Server
     location /api/ {
         proxy_pass http://sysops-server:8080;
     }
 
-    # WebSocket 프록시
+    # WebSocket proxy
     location /ws/ {
         proxy_pass http://sysops-server:8080;
         proxy_http_version 1.1;
@@ -587,7 +587,7 @@ server {
 }
 ```
 
-### docker-compose 통합
+### docker-compose Integration
 
 ```yaml
 services:
@@ -620,18 +620,18 @@ services:
 
 ---
 
-## ⚙ 설정
+## ⚙ Configuration
 
-### 환경 변수
+### Environment Variables
 
-| 변수 | 설명 | 기본값 |
-|------|------|--------|
-| `VITE_API_BASE` | API base URL (빌드 시) | `/api/v1` |
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `VITE_API_BASE` | API base URL (at build time) | `/api/v1` |
 
-### 테마
+### Theme
 
-| 요소 | Dark (기본) | Light |
-|------|------------|-------|
+| Element | Dark (Default) | Light |
+|---------|----------------|-------|
 | Background | `#0f172a` (slate-900) | `#f8fafc` (slate-50) |
 | Card | `#1e293b` (slate-800) | `#ffffff` |
 | Border | `#334155` (slate-700) | `#e2e8f0` (slate-200) |
@@ -641,11 +641,11 @@ services:
 | Warning | `#f59e0b` (amber-500) | `#f59e0b` |
 | Error | `#ef4444` (red-500) | `#ef4444` |
 
-### Status 색상 규칙
+### Status Color Rules
 
-| 상태 | 색상 | 의미 |
-|------|------|------|
-| `online` | 🟢 Green | 정상 동작 중 |
-| `critical` | 🔴 Red | Critical 알림 활성 |
-| `degraded` | 🟡 Yellow | Warning 알림 활성 |
-| `offline` | ⚫ Gray | Heartbeat 미수신 |
+| Status | Color | Meaning |
+|--------|-------|---------|
+| `online` | 🟢 Green | Operating normally |
+| `critical` | 🔴 Red | Critical alert active |
+| `degraded` | 🟡 Yellow | Warning alert active |
+| `offline` | ⚫ Gray | No heartbeat received |

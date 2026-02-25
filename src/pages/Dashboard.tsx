@@ -54,7 +54,7 @@ export default function Dashboard() {
       const h = Math.floor((Date.now() - new Date(a.created_at).getTime()) / 3_600_000);
       return h === hourAgo && a.severity === 'warning';
     }).length;
-    return { hour: `${hourAgo}h`, critical: critCount + Math.floor(Math.random() * 2), warning: warnCount + Math.floor(Math.random() * 3) };
+    return { hour: `${hourAgo}h`, critical: critCount, warning: warnCount };
   });
 
   if (!overview) return (

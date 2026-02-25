@@ -14,11 +14,10 @@ export default function Inventory() {
   useEffect(() => {
     getHosts().then(async (hList) => {
       setHosts(hList);
-      const invs: Record<string, InventoryRow> = {};
-      for (const h of hList) {
-        invs[h.hostname] = await getHostInventory(h.hostname);
-      }
-      setInventories(invs);
+      const entries = await Promise.all(
+        hList.map(async (h) => [h.hostname, await getHostInventory(h.hostname)] as const)
+      );
+      setInventories(Object.fromEntries(entries));
     });
   }, []);
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Shield, CheckCircle, XCircle, Play, Clock, AlertTriangle, ChevronDown, ChevronUp, Terminal } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, Play, Clock, ChevronDown, ChevronUp, Terminal } from 'lucide-react';
 import { getHealthChecks, approveHealthCheck, rejectHealthCheck, executeHealthCheck } from '../lib/api';
 import type { HealthCheck, ProposedAction, ExecutionResult } from '../lib/types';
 import { timeAgo, cn } from '../lib/utils';

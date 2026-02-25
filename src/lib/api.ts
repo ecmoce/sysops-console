@@ -1,4 +1,4 @@
-import { mockHosts, mockAlerts, mockFleetOverview, generateMetrics, getInventory, hostMetricSnapshots } from '../mocks/data';
+import { mockHosts, mockAlerts, mockFleetOverview, generateMetrics, getInventory, hostMetricSnapshots, mockHealthChecks } from '../mocks/data';
 import type { Host, AlertRow, FleetOverview, MetricRow, InventoryRow, HealthCheck } from './types';
 
 const API_BASE = '/api/v1';
@@ -60,11 +60,12 @@ export async function acknowledgeAlert(id: string): Promise<void> {
 
 export async function getHealthChecks(hostname?: string): Promise<HealthCheck[]> {
   const params = hostname ? `?hostname=${hostname}&limit=100` : '?limit=100';
-  return fetchApi(`/health-checks${params}`, []);
+  const fallback = hostname ? mockHealthChecks.filter(c => c.hostname === hostname) : mockHealthChecks;
+  return fetchApi(`/health-checks${params}`, fallback);
 }
 
 export async function getHealthCheck(id: string): Promise<HealthCheck | null> {
-  return fetchApi(`/health-checks/${id}`, null);
+  return fetchApi(`/health-checks/${id}`, mockHealthChecks.find(c => c.id === id) ?? null);
 }
 
 export async function approveHealthCheck(id: string): Promise<void> {

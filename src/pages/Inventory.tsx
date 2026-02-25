@@ -102,11 +102,18 @@ export default function Inventory() {
                       )}>{h.status}</span>
                     </span>
                   </td>
-                  <td className="px-5 py-3 text-xs">{hw?.cpu?.model || 'N/A'}<br /><span className="text-slate-500">{hw?.cpu?.threads}T</span></td>
-                  <td className="px-5 py-3 text-xs">{hw?.memory?.total_gb} GB<br /><span className="text-slate-500">{hw?.memory?.type}</span></td>
-                  <td className="px-5 py-3 text-xs">{hw?.gpu?.length ? hw.gpu.map((g: any) => `${g.count}× ${g.model}`).join(', ') : '—'}</td>
-                  <td className="px-5 py-3 text-xs max-w-48 truncate" title={hw?.storage?.map((s: any) => `${s.size_gb}GB ${s.type}`).join(', ')}>
-                    {hw?.storage?.map((s: any) => `${s.size_gb}GB ${s.type}`).join(', ') || 'N/A'}
+                  <td className="px-5 py-3 text-xs">
+                    {hw?.cpu?.model || hw?.cpu?.arch || 'N/A'}<br />
+                    <span className="text-slate-500">{hw?.cpu?.threads ? `${hw.cpu.threads}T` : hw?.cpu?.cores ? `${hw.cpu.cores}C` : ''}</span>
+                  </td>
+                  <td className="px-5 py-3 text-xs">
+                    {hw?.memory?.total_gb ? `${hw.memory.total_gb} GB` : hw?.memory?.total_bytes ? `${(hw.memory.total_bytes / 1073741824).toFixed(1)} GB` : 'N/A'}
+                    <br /><span className="text-slate-500">{hw?.memory?.type || ''}</span>
+                  </td>
+                  <td className="px-5 py-3 text-xs">{hw?.gpu?.length ? hw.gpu.map((g: any) => `${g.count ? g.count + '× ' : ''}${g.model}`).join(', ') : '—'}</td>
+                  <td className="px-5 py-3 text-xs max-w-48 truncate">
+                    {(hw?.storage || hw?.disks)?.filter((s: any) => (s.size_bytes || 0) > 0 || (s.size_gb || 0) > 0).slice(0, 3)
+                      .map((s: any) => s.size_gb ? `${s.size_gb}GB ${s.type || ''}` : `${((s.size_bytes || 0) / 1073741824).toFixed(0)}GB`).join(', ') || 'N/A'}
                   </td>
                   <td className="px-5 py-3 text-xs">{inv?.software?.os?.version || h.os}</td>
                   <td className="px-5 py-3 text-xs text-slate-500">{inv ? timeAgo(inv.collected_at) : '—'}</td>

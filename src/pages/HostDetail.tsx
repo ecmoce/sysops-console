@@ -95,17 +95,17 @@ export default function HostDetail() {
 
   useEffect(() => {
     if (!hostname) return;
-    getHostMetrics(hostname, 'cpu_usage', rangeHours(cpuRange)).then(setCpuData);
+    getHostMetrics(hostname, 'cpu.usage_percent', rangeHours(cpuRange)).then(setCpuData);
   }, [hostname, cpuRange]);
 
   useEffect(() => {
     if (!hostname) return;
-    getHostMetrics(hostname, 'memory_usage', rangeHours(memRange)).then(setMemData);
+    getHostMetrics(hostname, 'mem.usage_percent', rangeHours(memRange)).then(setMemData);
   }, [hostname, memRange]);
 
   useEffect(() => {
     if (!hostname) return;
-    getHostMetrics(hostname, 'disk_usage', rangeHours(diskRange)).then(setDiskData);
+    getHostMetrics(hostname, 'disk.usage_percent', rangeHours(diskRange)).then(setDiskData);
   }, [hostname, diskRange]);
 
   if (!host || !hostname) return <div className="p-8 text-slate-400">Loading...</div>;
@@ -162,39 +162,49 @@ export default function HostDetail() {
             </div>
             <div>
               <div className="text-slate-500 text-xs mb-1">CPU</div>
-              <div>{hw?.cpu?.model || 'N/A'}</div>
-              <div className="text-xs text-slate-500">{hw?.cpu?.sockets}S / {hw?.cpu?.cores_per_socket * (hw?.cpu?.sockets || 1)}C / {hw?.cpu?.threads}T</div>
+              <div>{hw?.cpu?.model || hw?.cpu?.arch || 'N/A'}</div>
+              <div className="text-xs text-slate-500">
+                {hw?.cpu?.cores ? `${hw.cpu.cores} cores` :
+                  hw?.cpu?.sockets ? `${hw.cpu.sockets}S / ${(hw.cpu.cores_per_socket || 0) * (hw.cpu.sockets || 1)}C / ${hw.cpu.threads || 0}T` : ''}
+              </div>
             </div>
             <div>
               <div className="text-slate-500 text-xs mb-1">Memory</div>
-              <div>{hw?.memory?.total_gb} GB {hw?.memory?.type}</div>
-              <div className="text-xs text-slate-500">{hw?.memory?.dimm_count} DIMMs</div>
+              <div>
+                {hw?.memory?.total_gb ? `${hw.memory.total_gb} GB` :
+                  hw?.memory?.total_bytes ? `${(hw.memory.total_bytes / 1073741824).toFixed(1)} GB` : 'N/A'}
+                {hw?.memory?.type ? ` ${hw.memory.type}` : ''}
+              </div>
+              {hw?.memory?.dimm_count && <div className="text-xs text-slate-500">{hw.memory.dimm_count} DIMMs</div>}
+              {hw?.memory?.swap_total_bytes > 0 && <div className="text-xs text-slate-500">Swap: {(hw.memory.swap_total_bytes / 1073741824).toFixed(1)} GB</div>}
             </div>
             <div>
               <div className="text-slate-500 text-xs mb-1">Network</div>
-              {hw?.network?.map((n: any, i: number) => (
-                <div key={i} className="text-xs">{n.interface} ({n.speed})</div>
+              {hw?.network?.filter((n: any) => n.name === 'eth0' || n.interface)?.slice(0, 4).map((n: any, i: number) => (
+                <div key={i} className="text-xs">{n.interface || n.name}{n.speed ? ` (${n.speed})` : ''}{n.mac ? ` — ${n.mac}` : ''}</div>
               ))}
             </div>
             {hw?.gpu?.length > 0 && (
               <div>
                 <div className="text-slate-500 text-xs mb-1">GPU</div>
                 {hw.gpu.map((g: any, i: number) => (
-                  <div key={i}>{g.count}× {g.model}</div>
+                  <div key={i}>{g.count ? `${g.count}× ` : ''}{g.model}</div>
                 ))}
               </div>
             )}
-            {hw?.storage?.length > 0 && (
+            {(hw?.storage?.length > 0 || hw?.disks?.length > 0) && (
               <div>
                 <div className="text-slate-500 text-xs mb-1">Storage</div>
-                {hw.storage.map((s: any, i: number) => (
-                  <div key={i} className="text-xs">{s.model} — {s.size_gb} GB</div>
+                {(hw.storage || hw.disks)?.filter((s: any) => (s.size_bytes || 0) > 0 || (s.size_gb || 0) > 0).slice(0, 4).map((s: any, i: number) => (
+                  <div key={i} className="text-xs">
+                    {s.device || s.name}{s.model ? ` ${s.model}` : ''} — {s.size_gb ? `${s.size_gb} GB` : `${((s.size_bytes || 0) / 1073741824).toFixed(1)} GB`}
+                  </div>
                 ))}
               </div>
             )}
             <div>
               <div className="text-slate-500 text-xs mb-1">Architecture</div>
-              <div>{host.arch}</div>
+              <div>{host.arch || hw?.cpu?.arch || 'N/A'}</div>
             </div>
             <div>
               <div className="text-slate-500 text-xs mb-1">Last Heartbeat</div>

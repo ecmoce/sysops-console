@@ -25,7 +25,16 @@ export async function getHost(hostname: string): Promise<Host | undefined> {
 export async function getHostMetrics(hostname: string, metrics: string = 'cpu_usage', hours: number = 1): Promise<MetricRow[]> {
   const from = new Date(Date.now() - hours * 3600_000).toISOString();
   const to = new Date().toISOString();
-  return fetchApi(`/hosts/${hostname}/metrics?from=${from}&to=${to}&metrics=${metrics}`, generateMetrics(hostname, metrics, hours));
+  try {
+    const res = await fetch(`${API_BASE}/hosts/${hostname}/metrics?from=${from}&to=${to}&metrics=${metrics}`);
+    if (!res.ok) throw new Error(`${res.status}`);
+    const json = await res.json();
+    // Server returns { datapoints: [...], from, to, hostname }
+    const points = json.datapoints ?? json.data ?? json;
+    return Array.isArray(points) ? points : [];
+  } catch {
+    return generateMetrics(hostname, metrics, hours);
+  }
 }
 
 export async function getHostAlerts(hostname: string): Promise<AlertRow[]> {

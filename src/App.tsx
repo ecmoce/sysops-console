@@ -6,6 +6,7 @@ import HostDetail from './pages/HostDetail';
 import Alerts from './pages/Alerts';
 import Inventory from './pages/Inventory';
 import SettingsPage from './pages/SettingsPage';
+import HealthChecks from './pages/HealthChecks';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="/hosts/:hostname" element={<HostDetail />} />
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/inventory" element={<Inventory />} />
+          <Route path="/health-checks" element={<HealthChecks />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
       </Routes>

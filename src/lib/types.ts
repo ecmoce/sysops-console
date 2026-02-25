@@ -40,6 +40,37 @@ export interface InventoryRow {
   software: any;
 }
 
+export interface HealthCheck {
+  id: string;
+  hostname: string;
+  status: 'pending' | 'approved' | 'rejected' | 'executing' | 'completed' | 'failed';
+  severity: 'critical' | 'warning' | 'info';
+  summary: string;
+  details: string;
+  system_snapshot: any;
+  llm_response: string;
+  proposed_actions: ProposedAction[];
+  execution_results: ExecutionResult[];
+  created_at: string;
+  reviewed_at: string | null;
+  executed_at: string | null;
+  completed_at: string | null;
+}
+
+export interface ProposedAction {
+  description: string;
+  command: string;
+  risk_level: 'low' | 'medium' | 'high';
+  expected_outcome: string;
+}
+
+export interface ExecutionResult {
+  command: string;
+  result?: { stdout: string; stderr: string; exit_code: number; duration_ms: number };
+  error?: string;
+  success: boolean;
+}
+
 export interface FleetOverview {
   total_hosts: number;
   online_hosts: number;

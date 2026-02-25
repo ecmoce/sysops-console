@@ -1,5 +1,5 @@
 import { mockHosts, mockAlerts, mockFleetOverview, generateMetrics, getInventory, hostMetricSnapshots } from '../mocks/data';
-import type { Host, AlertRow, FleetOverview, MetricRow, InventoryRow } from './types';
+import type { Host, AlertRow, FleetOverview, MetricRow, InventoryRow, HealthCheck } from './types';
 
 const API_BASE = '/api/v1';
 
@@ -54,4 +54,37 @@ export async function acknowledgeAlert(id: string): Promise<void> {
   } catch {
     // Mock mode — silently succeed
   }
+}
+
+// ── Health Checks ──
+
+export async function getHealthChecks(hostname?: string): Promise<HealthCheck[]> {
+  const params = hostname ? `?hostname=${hostname}&limit=100` : '?limit=100';
+  return fetchApi(`/health-checks${params}`, []);
+}
+
+export async function getHealthCheck(id: string): Promise<HealthCheck | null> {
+  return fetchApi(`/health-checks/${id}`, null);
+}
+
+export async function approveHealthCheck(id: string): Promise<void> {
+  await fetch(`${API_BASE}/health-checks/${id}/approve`, { method: 'POST' });
+}
+
+export async function rejectHealthCheck(id: string): Promise<void> {
+  await fetch(`${API_BASE}/health-checks/${id}/reject`, { method: 'POST' });
+}
+
+export async function executeHealthCheck(id: string, actionIndex?: number): Promise<any> {
+  const body = actionIndex !== undefined ? { action_index: actionIndex } : {};
+  const res = await fetch(`${API_BASE}/health-checks/${id}/execute`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  return res.json();
+}
+
+export async function getHealthCheckResult(id: string): Promise<any> {
+  return fetchApi(`/health-checks/${id}/result`, null);
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Server, Bell, Package, Settings, Activity, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Server, Bell, Package, Settings, Activity, Menu, X, Shield } from 'lucide-react';
 import { getAllAlerts } from '../lib/api';
 
 const navItems = [
@@ -8,6 +8,7 @@ const navItems = [
   { to: '/hosts', icon: Server, label: 'Hosts', badge: false },
   { to: '/alerts', icon: Bell, label: 'Alerts', badge: true },
   { to: '/inventory', icon: Package, label: 'Inventory', badge: false },
+  { to: '/health-checks', icon: Shield, label: 'Health Checks', badge: false },
   { to: '/settings', icon: Settings, label: 'Settings', badge: false },
 ];
 

@@ -12,6 +12,7 @@
 - [Project Structure](#-project-structure)
 - [Tech Stack](#-tech-stack)
 - [Supported Features](#-supported-features)
+- [Health Checks Page](#7-health-checks-health-checks)
 - [API Integration](#-api-integration)
 - [Mock Data](#-mock-data)
 - [Deployment](#-deployment)
@@ -274,6 +275,56 @@ Manages console settings.
 
 ---
 
+### 7. Health Checks (`/health-checks`)
+
+AI-powered system health analysis with human-in-the-loop approval workflow.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  🛡 Health Checks                          Auto-refresh: 15s │
+│                                                              │
+│  [All (5)] [Pending (2)] [Approved (1)] [Completed (2)]     │
+│                                                              │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │ 🛡 gpu-server-03  🔴 CRITICAL  ⏳ pending            │   │
+│  │    GPU temperature critical — requires intervention   │   │
+│  │                                              2m ago   │   │
+│  ├──────────────────────────────────────────────────────┤   │
+│  │ 🛡 db-server-01   🟡 WARNING   ✅ completed          │   │
+│  │    Disk usage approaching threshold                   │   │
+│  │                                             15m ago   │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                                                              │
+│  ▼ Expanded Card:                                            │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │  Analysis:                                            │   │
+│  │  Memory usage has been above 90% for 30 minutes...    │   │
+│  │                                                       │   │
+│  │  🔧 Proposed Actions (2):                             │   │
+│  │  ┌────────────────────────────────────────────────┐   │   │
+│  │  │ Restart memory-leaking process  ⚠ low risk     │   │   │
+│  │  │ $ systemctl restart app.service                │   │   │
+│  │  │ Expected: Memory returns to normal             │   │   │
+│  │  │                            [▶ Execute]         │   │   │
+│  │  └────────────────────────────────────────────────┘   │   │
+│  │                                                       │   │
+│  │  [✅ Approve]  [❌ Reject]                            │   │
+│  └──────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Features:**
+- Filter tabs: All / Pending / Approved / Completed (with counts)
+- Expandable cards with analysis details
+- Proposed actions with risk level badges and command preview
+- Approve/Reject workflow for pending checks
+- Execute individual or all actions for approved checks
+- Execution results with stdout/stderr and exit codes
+- Auto-refresh every 15 seconds
+- Status flow: pending → approved → executing → completed/failed
+
+---
+
 ## 🚀 Running the Application
 
 ### Prerequisites
@@ -350,12 +401,16 @@ sysops-console/
 │   │   ├── HostDetail.tsx    # Host detail (charts, inventory, alerts)
 │   │   ├── Alerts.tsx        # Global alert list
 │   │   ├── Inventory.tsx     # Hardware/software inventory
-│   │   └── SettingsPage.tsx  # Console settings
+│   │   ├── SettingsPage.tsx  # Console settings
+│   │   └── HealthChecks.tsx  # AI health check management
 │   │
 │   ├── components/           # Reusable UI components
 │   │   ├── Layout.tsx        # Sidebar + main layout
 │   │   ├── MetricBar.tsx     # CPU/Memory/Disk progress bar
-│   │   └── StatusDot.tsx     # Status indicator (🟢🔴🟡)
+│   │   ├── StatusDot.tsx     # Status indicator (🟢🔴🟡)
+│   │   ├── Shimmer.tsx       # Skeleton loading components
+│   │   ├── Pagination.tsx    # Pagination controls
+│   │   └── ErrorState.tsx    # Error display with retry
 │   │
 │   ├── lib/                  # Utilities
 │   │   ├── api.ts            # API call functions (fetch + mock fallback)
@@ -408,6 +463,7 @@ sysops-console/
 | Network Chart | rx/tx time series | Host Detail |
 | Alert List | Severity icons, relative time, filters | Alerts, Host Detail |
 | Inventory | Hardware/software table | Inventory |
+| Health Checks | AI analysis with approve/reject/execute workflow | Health Checks |
 
 ### Interaction
 
@@ -444,6 +500,12 @@ Console uses SysOps Server's REST API.
 | `GET /api/v1/hosts/{hostname}/metrics` | Host Detail | Time series metrics |
 | `GET /api/v1/hosts/{hostname}/alerts` | Host Detail, Alerts | Alert list |
 | `GET /api/v1/hosts/{hostname}/inventory` | Host Detail, Inventory | Inventory |
+| `GET /api/v1/health-checks` | Health Checks | List health checks |
+| `GET /api/v1/health-checks/{id}` | Health Checks | Health check details |
+| `POST /api/v1/health-checks/{id}/approve` | Health Checks | Approve check |
+| `POST /api/v1/health-checks/{id}/reject` | Health Checks | Reject check |
+| `POST /api/v1/health-checks/{id}/execute` | Health Checks | Execute actions |
+| `GET /api/v1/health-checks/{id}/result` | Health Checks | Execution results |
 | `WS /ws/v1/alerts/stream` | Alerts | Real-time alerts |
 
 ### API Call Pattern
